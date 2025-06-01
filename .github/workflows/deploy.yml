@@ -1,0 +1,59 @@
+name: Deploy React App to GitHub Pages
+
+# Run this workflow every time a new commit is pushed to the 'main' branch
+on:
+  push:
+    branches:
+      - main # Your primary development branch, now 'main'
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Checks out your repository under $GITHUB_WORKSPACE
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Or your preferred Node.js LTS version
+          cache: 'npm'
+
+      - name: Install dependencies
+        # Using 'npm ci' is generally recommended for CI for faster, more reliable builds
+        run: npm ci
+
+      - name: Build project
+        # This command comes from your package.json
+        run: npm run build
+        # This will create a 'build' directory with your static files
+
+      - name: Setup Pages
+        # This action configures GitHub Pages to prepare for deployment
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        # This action uploads the build output directory to GitHub Pages as an artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload the 'build' directory (output of 'npm run build' for Create React App)
+          path: './build'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        # This action deploys the uploaded artifact to your GitHub Pages site
+        uses: actions/deploy-pages@v4
