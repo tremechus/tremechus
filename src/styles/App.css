@@ -7,5 +7,182 @@ body {
     height: 100vh;
     margin: 0;
     font-family: 'Arial', sans-serif;
-    font-size: 3rem;
+    overflow: hidden;
+}
+
+.title-container {
+    text-align: center;
+}
+
+.tremechus-title {
+    color: white;
+    font-size: 4rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin: 0;
+    text-shadow: 
+        0 0 20px rgba(0, 255, 65, 0.8),
+        0 0 40px rgba(0, 255, 65, 0.6),
+        0 0 60px rgba(0, 255, 65, 0.4),
+        0 0 80px rgba(0, 255, 65, 0.2);
+    transition: all 0.3s ease;
+    animation: subtleGlow 8s ease-in-out infinite;
+    position: relative;
+}
+
+.tremechus-title:hover {
+    text-shadow: 
+        0 0 25px rgba(0, 255, 65, 1),
+        0 0 50px rgba(0, 255, 65, 0.8),
+        0 0 75px rgba(0, 255, 65, 0.6),
+        0 0 100px rgba(0, 255, 65, 0.4);
+    transform: scale(1.05);
+    letter-spacing: 0.15em;
+}
+
+@keyframes subtleGlow {
+    0% {
+        text-shadow: 
+            0 0 20px rgba(0, 255, 65, 0.8),
+            0 0 40px rgba(0, 255, 65, 0.6),
+            0 0 60px rgba(0, 255, 65, 0.4),
+            0 0 80px rgba(0, 255, 65, 0.2);
+    }
+    15% {
+        text-shadow: 
+            0 0 35px rgba(0, 255, 65, 0.9),
+            0 0 70px rgba(0, 255, 65, 0.7),
+            0 0 105px rgba(0, 255, 65, 0.5),
+            0 0 140px rgba(0, 255, 65, 0.3);
+    }
+    30% {
+        text-shadow: 
+            0 0 15px rgba(0, 255, 65, 0.7),
+            0 0 30px rgba(0, 255, 65, 0.5),
+            0 0 45px rgba(0, 255, 65, 0.3),
+            0 0 60px rgba(0, 255, 65, 0.1);
+    }
+    45% {
+        text-shadow: 
+            0 0 50px rgba(0, 255, 65, 1),
+            0 0 100px rgba(0, 255, 65, 0.8),
+            0 0 150px rgba(0, 255, 65, 0.6),
+            0 0 200px rgba(0, 255, 65, 0.4);
+    }
+    60% {
+        text-shadow: 
+            0 0 25px rgba(0, 255, 65, 0.6),
+            0 0 50px rgba(0, 255, 65, 0.4),
+            0 0 75px rgba(0, 255, 65, 0.2),
+            0 0 100px rgba(0, 255, 65, 0.1);
+    }
+    75% {
+        text-shadow: 
+            0 0 40px rgba(0, 255, 65, 0.95),
+            0 0 80px rgba(0, 255, 65, 0.75),
+            0 0 120px rgba(0, 255, 65, 0.55),
+            0 0 160px rgba(0, 255, 65, 0.35);
+    }
+    90% {
+        text-shadow: 
+            0 0 10px rgba(0, 255, 65, 0.5),
+            0 0 20px rgba(0, 255, 65, 0.3),
+            0 0 30px rgba(0, 255, 65, 0.1),
+            0 0 40px rgba(0, 255, 65, 0.05);
+    }
+    100% {
+        text-shadow: 
+            0 0 30px rgba(0, 255, 65, 0.85),
+            0 0 60px rgba(0, 255, 65, 0.65),
+            0 0 90px rgba(0, 255, 65, 0.45),
+            0 0 120px rgba(0, 255, 65, 0.25);
+    }
+}
+
+.cursor {
+    color: white;
+    font-weight: 100;
+    animation: blink 1.06s infinite;
+    position: absolute;
+    margin-left: 0.1em;
+    text-shadow: 
+        0 0 10px rgba(0, 255, 65, 0.8),
+        0 0 20px rgba(0, 255, 65, 0.5);
+}
+
+.credit {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 3s forwards;
+}
+
+.credit:hover {
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.3s ease;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 3s forwards;
+}
+
+.social-link {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.social-link:hover {
+    color: white;
+    background: rgba(0, 255, 65, 0.1);
+    text-shadow: 
+        0 0 15px rgba(0, 255, 65, 0.8),
+        0 0 30px rgba(0, 255, 65, 0.6);
+    transform: scale(1.2);
+}
+
+.social-link svg {
+    width: 24px;
+    height: 24px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .tremechus-title {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tremechus-title {
+        font-size: 2.5rem;
+    }
 }
