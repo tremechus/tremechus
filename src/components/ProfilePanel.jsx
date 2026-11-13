@@ -30,6 +30,7 @@ const ProfilePanel = () => (
                 <div>
                     <p className="profile-name">{profile.name}</p>
                     {profile.headline && <p className="profile-headline">{profile.headline}</p>}
+                    {profile.role && <p className="profile-role">{profile.role}</p>}
                 </div>
             </div>
 

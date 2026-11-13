@@ -42,7 +42,7 @@ const Timeline = ({ repos }) => {
                     <li key={year} className="timeline-year">
                         <div className="track track-personal">
                             {personal.map(item => (
-                                <TimelineItem key={item.title} item={item} />
+                                <TimelineItem key={`${item.title}-${item.org || ''}`} item={item} />
                             ))}
                         </div>
                         <div className="spine">
@@ -50,7 +50,7 @@ const Timeline = ({ repos }) => {
                         </div>
                         <div className="track track-professional">
                             {professional.map(item => (
-                                <TimelineItem key={item.title} item={item} />
+                                <TimelineItem key={`${item.title}-${item.org || ''}`} item={item} />
                             ))}
                         </div>
                     </li>
@@ -64,6 +64,7 @@ const TimelineItem = ({ item }) => {
     const body = (
         <>
             <span className="item-title">{item.title}</span>
+            {item.org && <span className="item-org">{item.org}</span>}
             {item.detail && <span className="item-detail">{item.detail}</span>}
         </>
     );

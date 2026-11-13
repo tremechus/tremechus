@@ -432,6 +432,12 @@ a {
     color: var(--blue);
 }
 
+.profile-role {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
 .profile-bio {
     margin: 0;
     color: rgba(230, 237, 243, 0.8);
@@ -601,6 +607,21 @@ a.timeline-item:hover {
 .item-title {
     font-family: var(--mono);
     font-size: 0.9rem;
+}
+
+.item-org {
+    color: var(--blue);
+    font-size: 0.8rem;
+}
+
+.track-professional .item-title {
+    font-family: var(--sans);
+    font-weight: 600;
+}
+
+.track-professional a.timeline-item:hover {
+    border-color: rgba(var(--blue-rgb), 0.5);
+    box-shadow: 0 0 20px rgba(var(--blue-rgb), 0.12);
 }
 
 .item-detail {
