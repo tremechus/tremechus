@@ -1,0 +1,82 @@
+[
+  {
+    "name": "image_eval",
+    "description": null,
+    "language": "HTML",
+    "html_url": "https://github.com/tremechus/image_eval",
+    "created_at": "2025-07-26T20:45:39Z",
+    "pushed_at": "2025-07-27T17:49:05Z",
+    "stargazers_count": 0,
+    "fork": false
+  },
+  {
+    "name": "tremechus",
+    "description": null,
+    "language": "JavaScript",
+    "html_url": "https://github.com/tremechus/tremechus",
+    "created_at": "2025-06-01T16:37:11Z",
+    "pushed_at": "2025-07-27T00:15:11Z",
+    "stargazers_count": 0,
+    "fork": false
+  },
+  {
+    "name": "project_arbor",
+    "description": "MMO AI coding experiment",
+    "language": "JavaScript",
+    "html_url": "https://github.com/tremechus/project_arbor",
+    "created_at": "2025-07-06T21:04:40Z",
+    "pushed_at": "2025-07-07T00:27:11Z",
+    "stargazers_count": 0,
+    "fork": false
+  },
+  {
+    "name": "ai_discuss",
+    "description": "Two AI models discuss a user selected topic (Built by an AI agent)",
+    "language": "JavaScript",
+    "html_url": "https://github.com/tremechus/ai_discuss",
+    "created_at": "2025-06-22T17:39:36Z",
+    "pushed_at": "2025-06-23T04:57:36Z",
+    "stargazers_count": 0,
+    "fork": false
+  },
+  {
+    "name": "vibe_client",
+    "description": "Experimental \"vibe coding\" a ollama client that supports tools",
+    "language": "Python",
+    "html_url": "https://github.com/tremechus/vibe_client",
+    "created_at": "2025-05-18T16:21:19Z",
+    "pushed_at": "2025-05-18T17:04:36Z",
+    "stargazers_count": 1,
+    "fork": false
+  },
+  {
+    "name": "swakker-archive",
+    "description": null,
+    "language": "HTML",
+    "html_url": "https://github.com/tremechus/swakker-archive",
+    "created_at": "2024-12-08T20:59:24Z",
+    "pushed_at": "2024-12-08T22:21:01Z",
+    "stargazers_count": 0,
+    "fork": false
+  },
+  {
+    "name": "sqlboa",
+    "description": "Sqlite sql editor for developers",
+    "language": "Java",
+    "html_url": "https://github.com/tremechus/sqlboa",
+    "created_at": "2015-02-06T16:48:37Z",
+    "pushed_at": "2015-03-30T22:10:37Z",
+    "stargazers_count": 0,
+    "fork": false
+  },
+  {
+    "name": "boaconnector_android",
+    "description": "Android library to enable connecting SqlBoa to a live sqlite database",
+    "language": "Java",
+    "html_url": "https://github.com/tremechus/boaconnector_android",
+    "created_at": "2015-03-06T19:03:59Z",
+    "pushed_at": "2015-03-15T07:04:22Z",
+    "stargazers_count": 0,
+    "fork": false
+  }
+]
