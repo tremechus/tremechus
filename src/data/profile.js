@@ -10,7 +10,7 @@ export const profile = {
         url: 'https://github.com/tremechus',
         joined: 2011,
         // Repos to leave off the site entirely.
-        hidden: [],
+        hidden: ['sqlboa', 'boaconnector_android'],
         // Fill in descriptions for repos that don't have one on GitHub.
         descriptions: {},
     },
