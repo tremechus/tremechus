@@ -30,7 +30,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Or your preferred Node.js LTS version
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -40,7 +40,7 @@ jobs:
       - name: Build project
         # This command comes from your package.json
         run: npm run build
-        # This will create a 'build' directory with your static files
+        # This will create a 'dist' directory with your static files
 
       - name: Setup Pages
         # This action configures GitHub Pages to prepare for deployment
@@ -50,8 +50,8 @@ jobs:
         # This action uploads the build output directory to GitHub Pages as an artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload the 'build' directory (output of 'npm run build' for Create React App)
-          path: './build'
+          # Upload the 'dist' directory (Vite build output)
+          path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
