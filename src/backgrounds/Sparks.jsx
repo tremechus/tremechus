@@ -17,8 +17,10 @@ import React, { useEffect, useRef } from 'react';
 const TARGETS = '.terminal, .profile-card, .panel-cta, .timeline-item, .year';
 
 const START_DELAY_MS = 2600; // let the intro animation finish first
-const MIN_GAP_MS = 350;
-const MAX_GAP_MS = 1600;
+const MIN_GAP_MS = 900;
+const MAX_GAP_MS = 3200;
+// Playback speed of each spark (flash, arcs, crawl, embers). 1 = original, lower = slower.
+const SPEED = 0.6;
 const DOUBLE_POP_CHANCE = 0.3;
 const HOVER_COOLDOWN_MS = 1200;
 const MAX_ACTIVE = 6;
@@ -262,7 +264,7 @@ const Sparks = () => {
             last = now;
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
             ctx.globalCompositeOperation = 'lighter';
-            sparks = sparks.filter(s => s.el.isConnected && drawSpark(ctx, s, dt));
+            sparks = sparks.filter(s => s.el.isConnected && drawSpark(ctx, s, dt * SPEED));
             ctx.globalCompositeOperation = 'source-over';
             frame = sparks.length ? requestAnimationFrame(tick) : 0;
         };
