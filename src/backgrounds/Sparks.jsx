@@ -17,10 +17,10 @@ import React, { useEffect, useRef } from 'react';
 const TARGETS = '.terminal, .profile-card, .panel-cta, .timeline-item, .year';
 
 const START_DELAY_MS = 2600; // let the intro animation finish first
-const MIN_GAP_MS = 900;
-const MAX_GAP_MS = 3200;
+const MIN_GAP_MS = 1800;
+const MAX_GAP_MS = 5500;
 // Playback speed of each spark (flash, arcs, crawl, embers). 1 = original, lower = slower.
-const SPEED = 0.6;
+const SPEED = 0.4;
 const DOUBLE_POP_CHANCE = 0.3;
 const HOVER_COOLDOWN_MS = 1200;
 const MAX_ACTIVE = 6;
