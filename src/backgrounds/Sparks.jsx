@@ -148,7 +148,7 @@ function createSpark(el, corner, intensity = 1) {
             redrawIn: 0,
         })),
         crawl: rand(18, 60) * intensity,
-        embers: Array.from({ length: Math.round(rand(6, 16) * intensity) }, () => {
+        embers: Array.from({ length: Math.max(1, Math.round(rand(3, 8) * intensity)) }, () => {
             const angle = launchAngle(corner, rand(...EMBER_DROP));
             const speed = rand(0.08, 0.35);
             return { angle, speed, x: 0, y: 0, vx: null, vy: null, life: rand(300, 750), px: 0, py: 0 };
