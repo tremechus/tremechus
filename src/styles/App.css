@@ -42,15 +42,6 @@ a {
     outline-offset: 3px;
 }
 
-.constellation {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 0;
-    pointer-events: none;
-}
-
 .page {
     position: relative;
     z-index: 1;

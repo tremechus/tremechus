@@ -5,6 +5,9 @@ export const profile = {
     handle: 'tremechus',
     name: 'Trevor Croft',
 
+    // Which background effect to show: see src/backgrounds/index.js
+    background: 'sparks',
+
     github: {
         user: 'tremechus',
         url: 'https://github.com/tremechus',

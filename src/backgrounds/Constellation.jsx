@@ -2,6 +2,15 @@ import React, { useEffect, useRef } from 'react';
 
 const GREEN = [0, 255, 65];
 const BLUE = [135, 206, 235];
+// Sits behind the page content.
+const CANVAS_STYLE = {
+    position: 'fixed',
+    inset: 0,
+    width: '100vw',
+    height: '100vh',
+    zIndex: 0,
+    pointerEvents: 'none',
+};
 const LINK_DISTANCE = 140;
 const POINTER_RADIUS = 180;
 
@@ -132,7 +141,7 @@ const Constellation = () => {
         };
     }, []);
 
-    return <canvas ref={canvasRef} className="constellation" aria-hidden="true" />;
+    return <canvas ref={canvasRef} aria-hidden="true" style={CANVAS_STYLE} />;
 };
 
 export default Constellation;

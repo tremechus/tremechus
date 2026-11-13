@@ -1,5 +1,5 @@
 import React from 'react';
-import Constellation from './components/Constellation';
+import Background from './backgrounds/Background';
 import TypedTitle from './components/TypedTitle';
 import TerminalPanel from './components/TerminalPanel';
 import ProfilePanel from './components/ProfilePanel';
@@ -13,7 +13,7 @@ function App() {
 
     return (
         <>
-            <Constellation />
+            <Background name={profile.background} />
             <main className="page">
                 <header className="hero">
                     <TypedTitle text={profile.handle} className="hero-title" />
