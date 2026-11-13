@@ -30,7 +30,7 @@ const MAX_ACTIVE = 6;
 // Background grid
 const GRID_SIZE = 40; // px between lines
 const GRID_COLOR = '0, 255, 65';
-const GRID_BASE_ALPHA = 0.035; // resting grid, barely there
+const GRID_BASE_ALPHA = 0.06; // resting grid, barely there
 const GRID_LIT_ALPHA = 0.45; // line brightness right next to a fresh spark
 const GLOW_RADIUS = 170; // px of grid lit around a spark
 const GLOW_HAZE_ALPHA = 0.05; // soft wash of light under the lit lines
