@@ -7,6 +7,8 @@ import React, { useEffect, useRef } from 'react';
  *   - a few jagged arcs that flicker outward, re-drawn every couple of frames
  *   - current that crawls a short way along the two edges meeting at the corner
  *   - embers that spray out and fall
+ * Behind the page sits a faint green grid; each spark lights up the grid
+ * around it, as if the discharge were illuminating the wall behind.
  * Sparks track their element while alive, so they stay put when the page scrolls.
  * Hovering a component can also set off its nearest corner.
  *
@@ -25,14 +27,39 @@ const DOUBLE_POP_CHANCE = 0.3;
 const HOVER_COOLDOWN_MS = 1200;
 const MAX_ACTIVE = 6;
 
-const CANVAS_STYLE = {
+// Background grid
+const GRID_SIZE = 40; // px between lines
+const GRID_COLOR = '0, 255, 65';
+const GRID_BASE_ALPHA = 0.035; // resting grid, barely there
+const GRID_LIT_ALPHA = 0.45; // line brightness right next to a fresh spark
+const GLOW_RADIUS = 170; // px of grid lit around a spark
+const GLOW_HAZE_ALPHA = 0.05; // soft wash of light under the lit lines
+const GLOW_LIFE = 600; // spark-time ms the light lingers (scaled by SPEED like everything else)
+
+const LAYER = {
     position: 'fixed',
     inset: 0,
     width: '100vw',
     height: '100vh',
-    zIndex: 5, // above content, so sparks sit on the component edges
     pointerEvents: 'none',
 };
+
+// Resting grid, drawn by CSS so it costs nothing. Fades out toward the edges.
+const GRID_STYLE = {
+    ...LAYER,
+    zIndex: 0,
+    backgroundImage: `linear-gradient(to right, rgba(${GRID_COLOR}, ${GRID_BASE_ALPHA}) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(${GRID_COLOR}, ${GRID_BASE_ALPHA}) 1px, transparent 1px)`,
+    backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px`,
+    maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 100%)',
+    WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 100%)',
+};
+
+// Light cast on the grid: behind the content.
+const GLOW_STYLE = { ...LAYER, zIndex: 0 };
+
+// The sparks themselves: above the content, so they sit on the component edges.
+const SPARK_STYLE = { ...LAYER, zIndex: 5 };
 
 const CORNERS = [
     { key: 'TopLeft', sx: -1, sy: -1 },
@@ -136,6 +163,8 @@ function createSpark(el, corner, intensity = 1) {
     return {
         el,
         corner,
+        intensity,
+        origin: null,
         age: 0,
         life: rand(220, 380) * intensity,
         flashSize: rand(14, 26) * intensity,
@@ -161,6 +190,7 @@ function drawSpark(ctx, spark, dt) {
     spark.age += dt;
     const geo = cornerGeometry(spark.el, spark.corner);
     const { origin } = geo;
+    spark.origin = origin;
     let alive = false;
 
     // Flash
@@ -244,14 +274,80 @@ function drawSpark(ctx, spark, dt) {
     return alive;
 }
 
+/** How brightly a spark is lighting the grid right now (0..1). */
+function glowLevel(spark) {
+    const t = spark.age / GLOW_LIFE;
+    if (t >= 1) return 0;
+    const attack = Math.min(1, spark.age / 15);
+    const decay = (1 - t) * (1 - t);
+    const flicker = spark.age < 200 ? rand(0.7, 1) : 1; // stutters while the arcs are live
+    return attack * decay * flicker * Math.min(1, spark.intensity);
+}
+
+/**
+ * Light up the grid around a spark: draw grid lines into a scratch canvas,
+ * keep only a radial falloff of them, and add the result onto the glow layer
+ * with a faint haze underneath.
+ */
+function drawGlow(ctx, scratch, spark, dpr) {
+    const level = glowLevel(spark);
+    if (level <= 0.01 || !spark.origin) return;
+    const R = GLOW_RADIUS * (0.75 + 0.25 * spark.intensity);
+    const left = Math.round(spark.origin.x - R);
+    const top = Math.round(spark.origin.y - R);
+    const size = Math.ceil(R * 2);
+
+    const sctx = scratch.getContext('2d');
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sctx.globalCompositeOperation = 'source-over';
+    sctx.clearRect(0, 0, size, size);
+
+    // Grid lines, aligned with the CSS grid (lines sit at multiples of GRID_SIZE).
+    sctx.strokeStyle = `rgb(${GRID_COLOR})`;
+    sctx.lineWidth = 1;
+    sctx.beginPath();
+    const mod = n => ((n % GRID_SIZE) + GRID_SIZE) % GRID_SIZE;
+    for (let x = (GRID_SIZE - mod(left)) % GRID_SIZE; x <= size; x += GRID_SIZE) {
+        sctx.moveTo(x + 0.5, 0);
+        sctx.lineTo(x + 0.5, size);
+    }
+    for (let y = (GRID_SIZE - mod(top)) % GRID_SIZE; y <= size; y += GRID_SIZE) {
+        sctx.moveTo(0, y + 0.5);
+        sctx.lineTo(size, y + 0.5);
+    }
+    sctx.stroke();
+
+    // Keep a radial falloff of them.
+    sctx.globalCompositeOperation = 'destination-in';
+    const mask = sctx.createRadialGradient(R, R, 0, R, R, R);
+    mask.addColorStop(0, `rgba(0, 0, 0, ${GRID_LIT_ALPHA * level})`);
+    mask.addColorStop(0.4, `rgba(0, 0, 0, ${GRID_LIT_ALPHA * level * 0.35})`);
+    mask.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    sctx.fillStyle = mask;
+    sctx.fillRect(0, 0, size, size);
+
+    // Haze, then the lit lines on top.
+    const haze = ctx.createRadialGradient(spark.origin.x, spark.origin.y, 0, spark.origin.x, spark.origin.y, R);
+    haze.addColorStop(0, `rgba(${GRID_COLOR}, ${GLOW_HAZE_ALPHA * level})`);
+    haze.addColorStop(1, `rgba(${GRID_COLOR}, 0)`);
+    ctx.fillStyle = haze;
+    ctx.fillRect(left, top, size, size);
+    ctx.drawImage(scratch, 0, 0, size * dpr, size * dpr, left, top, size, size);
+}
+
 const Sparks = () => {
     const canvasRef = useRef(null);
+    const glowRef = useRef(null);
 
     useEffect(() => {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
+        const glow = glowRef.current;
+        const gctx = glow.getContext('2d');
+        const scratch = document.createElement('canvas');
+        let dpr = 1;
         let sparks = [];
         let frame = 0;
         let last = 0;
@@ -267,10 +363,16 @@ const Sparks = () => {
         };
 
         const resize = () => {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            for (const [c, cx] of [
+                [canvas, ctx],
+                [glow, gctx],
+            ]) {
+                c.width = window.innerWidth * dpr;
+                c.height = window.innerHeight * dpr;
+                cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            scratch.width = scratch.height = Math.ceil(GLOW_RADIUS * 2 * dpr) + 2;
         };
 
         // Only animate while something is burning; idle otherwise.
@@ -278,9 +380,17 @@ const Sparks = () => {
             const dt = Math.min(now - last, 50);
             last = now;
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            gctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
             ctx.globalCompositeOperation = 'lighter';
-            sparks = sparks.filter(s => s.el.isConnected && drawSpark(ctx, s, dt * SPEED));
+            gctx.globalCompositeOperation = 'lighter';
+            sparks = sparks.filter(s => {
+                if (!s.el.isConnected) return false;
+                const burning = drawSpark(ctx, s, dt * SPEED);
+                drawGlow(gctx, scratch, s, dpr);
+                return burning || s.age < GLOW_LIFE;
+            });
             ctx.globalCompositeOperation = 'source-over';
+            gctx.globalCompositeOperation = 'source-over';
             frame = sparks.length ? requestAnimationFrame(tick) : 0;
         };
 
@@ -345,7 +455,13 @@ const Sparks = () => {
         };
     }, []);
 
-    return <canvas ref={canvasRef} aria-hidden="true" style={CANVAS_STYLE} />;
+    return (
+        <>
+            <div aria-hidden="true" style={GRID_STYLE} />
+            <canvas ref={glowRef} aria-hidden="true" style={GLOW_STYLE} />
+            <canvas ref={canvasRef} aria-hidden="true" style={SPARK_STYLE} />
+        </>
+    );
 };
 
 export default Sparks;
