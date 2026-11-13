@@ -42,6 +42,24 @@ const CORNERS = [
 ];
 
 const rand = (min, max) => min + Math.random() * (max - min);
+
+// Launch directions, in radians below horizontal (negative = above).
+// Sparks fire outward sideways and mostly level-to-down, like real sparks
+// falling off a contact, rather than bursting upward like fireworks.
+const ARC_DROP = [-0.3, 1.0];
+const EMBER_DROP = [-0.15, 1.3];
+const MAX_RISE = 0.35; // steepest any arc or fork may point upward
+
+/** Absolute canvas angle pointing outward from the corner, `drop` radians below horizontal. */
+const launchAngle = (corner, drop) => (corner.sx > 0 ? drop : Math.PI - drop);
+
+/** Limit how far above horizontal an angle may point. */
+function clampRise(angle) {
+    const dx = Math.cos(angle);
+    const rise = Math.atan2(-Math.sin(angle), Math.abs(dx));
+    if (rise <= MAX_RISE) return angle;
+    return dx >= 0 ? -MAX_RISE : Math.PI + MAX_RISE;
+}
 const SQRT1_2 = Math.SQRT1_2;
 
 /** Geometry of one corner of an element, in viewport coordinates. */
@@ -56,8 +74,6 @@ function cornerGeometry(el, corner) {
         rect,
         // the spark origin sits on the curve of the rounded corner
         origin: { x: x - corner.sx * inset, y: y - corner.sy * inset },
-        // outward diagonal
-        out: { x: corner.sx * SQRT1_2, y: corner.sy * SQRT1_2 },
         // where each straight edge starts, and which way it runs away from the corner
         edges: [
             { x: x - corner.sx * r, y, dx: -corner.sx, dy: 0 },
@@ -87,7 +103,7 @@ function bolt(x0, y0, x1, y1, roughness, forks) {
     const paths = [points];
     for (let f = 0; f < forks; f++) {
         const from = points[1 + Math.floor(Math.random() * (points.length - 2))];
-        const angle = Math.atan2(y1 - y0, x1 - x0) + rand(-0.9, 0.9);
+        const angle = clampRise(Math.atan2(y1 - y0, x1 - x0) + rand(-0.9, 0.9));
         const flen = len * rand(0.3, 0.6);
         paths.push(...bolt(from.x, from.y, from.x + Math.cos(angle) * flen, from.y + Math.sin(angle) * flen, roughness, 0));
     }
@@ -124,7 +140,7 @@ function createSpark(el, corner, intensity = 1) {
         life: rand(220, 380) * intensity,
         flashSize: rand(14, 26) * intensity,
         arcs: Array.from({ length: arcCount }, () => ({
-            angle: rand(-1.1, 1.1), // relative to the outward diagonal
+            angle: launchAngle(corner, rand(...ARC_DROP)),
             length: rand(12, 40) * intensity,
             life: rand(80, 220),
             forks: Math.random() < 0.4 ? 1 : 0,
@@ -133,7 +149,7 @@ function createSpark(el, corner, intensity = 1) {
         })),
         crawl: rand(18, 60) * intensity,
         embers: Array.from({ length: Math.round(rand(6, 16) * intensity) }, () => {
-            const angle = rand(-1.3, 1.3);
+            const angle = launchAngle(corner, rand(...EMBER_DROP));
             const speed = rand(0.08, 0.35);
             return { angle, speed, x: 0, y: 0, vx: null, vy: null, life: rand(300, 750), px: 0, py: 0 };
         }),
@@ -144,8 +160,7 @@ function createSpark(el, corner, intensity = 1) {
 function drawSpark(ctx, spark, dt) {
     spark.age += dt;
     const geo = cornerGeometry(spark.el, spark.corner);
-    const { origin, out } = geo;
-    const baseAngle = Math.atan2(out.y, out.x);
+    const { origin } = geo;
     let alive = false;
 
     // Flash
@@ -169,7 +184,7 @@ function drawSpark(ctx, spark, dt) {
         alive = true;
         arc.redrawIn -= dt;
         if (!arc.paths || arc.redrawIn <= 0) {
-            const a = baseAngle + arc.angle + rand(-0.15, 0.15);
+            const a = clampRise(arc.angle + rand(-0.15, 0.15));
             const len = arc.length * rand(0.7, 1.1);
             arc.paths = bolt(0, 0, Math.cos(a) * len, Math.sin(a) * len, 0.28, arc.forks);
             arc.redrawIn = rand(30, 60);
@@ -207,7 +222,7 @@ function drawSpark(ctx, spark, dt) {
         if (spark.age > e.life) continue;
         alive = true;
         if (e.vx === null) {
-            const a = baseAngle + e.angle;
+            const a = e.angle;
             e.vx = Math.cos(a) * e.speed;
             e.vy = Math.sin(a) * e.speed;
         }
