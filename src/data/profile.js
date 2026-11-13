@@ -26,8 +26,10 @@ export const profile = {
     headline: 'Hands-on engineering leader',
     role: 'Head of Engineering at Reflex',
     bio:
-        'I build engineering teams and the systems they run on, and I still write a lot of the code. ' +
-        'At Reflex I took the platform from pre-launch to 50k+ active users while staying over 70% hands-on. ' +
+        'I build engineering teams and the systems they run on. ' +
+        'For two decades I wrote the code myself; today I direct AI agents that write it, ' +
+        'and I own the architecture, the review and the result. ' +
+        'At Reflex I took the platform from pre-launch to 50k+ active users. ' +
         'Before that, eleven years at Mobiquity growing from Android platform lead to VP of Engineering.',
     focus: [
         'Engineering leadership',
