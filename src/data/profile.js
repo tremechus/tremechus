@@ -34,6 +34,7 @@ export const profile = {
     focus: [
         'Engineering leadership',
         'Distributed systems',
+        'Scaling systems & teams',
         'Cloud architecture (AWS)',
         'Payments & transactions',
         'Mobile (React Native, Android)',
